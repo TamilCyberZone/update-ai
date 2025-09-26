@@ -3,14 +3,16 @@ export async function handler(event) {
     const body = JSON.parse(event.body || "{}");
     const input = (body.input || "").toLowerCase().trim();
 
-    let answer = "Hello"; // Default response
+    let answer = "Hello"; // default
 
-    // Simple logic
+    // Backend AI logic
     if (input === "hi") {
+      answer = "Bye";
+    } else if (input === "hello") {
+      answer = "Bye Bye!";
+    } else if (!input) {
       answer = "Hello";
-    } else if (input === "how are you") {
-      answer = "I am fine, thank you!";
-    } else if (input) {
+    } else {
       answer = "You said: " + input;
     }
 

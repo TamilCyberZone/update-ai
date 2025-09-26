@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AI Hello</title>
+  <title>Simple AI</title>
 </head>
 <body>
-  <h1>AI Backend Example</h1>
-  <textarea id="userInput" placeholder="Type something..." rows="4" cols="50"></textarea>
+  <h1>AI Answer Example3</h1>
+  <textarea id="userInput" placeholder="Type your input..." rows="4" cols="50"></textarea>
   <br><br>
   <button onclick="askAI()">Send</button>
 
-  <!-- Response shown here -->
+  <!-- Answer shown here -->
   <h1 id="response" style="color: #1a73e8; font-size: 1.5em;">Hello</h1>
 
   <script>
@@ -18,7 +18,7 @@
       const text = document.getElementById("userInput").value.trim();
       const responseH1 = document.getElementById("response");
 
-      // If no input, show "Hello"
+      // If no input, show default "Hello"
       if (!text) {
         responseH1.textContent = "Hello";
         return;
@@ -34,7 +34,7 @@
         const data = await res.json();
         responseH1.textContent = data.answer;
       } catch (err) {
-        responseH1.textContent = "Error from backend!";
+        responseH1.textContent = "Error from AI backend!";
         console.error(err);
       }
     }
