@@ -6,23 +6,27 @@
 </head>
 <body>
   <h1>🌐 Wiki Search AI</h1>
-  <textarea id="userInput" placeholder="எந்த விஷயம் வேண்டும்? (type any topic)"></textarea>
+  <textarea id="userInput" placeholder="எந்த விஷயம் வேண்டும்? (type any topic)" rows="4" cols="50"></textarea>
+  <br><br>
   <button onclick="askAI()">Search</button>
   
-  <!-- Answer shown in <p> -->
-  <p id="response"></p>
+  <!-- Answer will show in H1 -->
+  <h1 id="response" style="color: #1a73e8; font-size: 1.5em;"></h1>
 
   <script>
     async function askAI() {
       const text = document.getElementById("userInput").value;
+      if (!text) return alert("Please enter a topic!");
+
       const res = await fetch("/.netlify/functions/script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input: text })
       });
+
       const data = await res.json();
-      
-      // Print inside <p> tag
+
+      // Print answer inside <h1>
       document.getElementById("response").textContent = data.answer;
     }
   </script>

@@ -5,7 +5,7 @@ export async function handler(event) {
     const body = JSON.parse(event.body);
     const userInput = body.input || "";
 
-    // ❌ Filter illegal inputs
+    // ❌ Illegal input filter
     if (userInput.toLowerCase().includes("illegal")) {
       return {
         statusCode: 400,
@@ -13,7 +13,7 @@ export async function handler(event) {
       };
     }
 
-    // ✅ Search in Wikipedia API (open, no key needed)
+    // ✅ Wikipedia REST API (no API key needed)
     const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(userInput)}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -31,6 +31,6 @@ export async function handler(event) {
     };
 
   } catch (err) {
-    return { statusCode: 500, body: "Server Error: " + err.message };
+    return { statusCode: 500, body: JSON.stringify({ answer: "Server Error: " + err.message }) };
   }
 }
