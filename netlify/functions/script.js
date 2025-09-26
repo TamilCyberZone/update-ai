@@ -1,36 +1,28 @@
-import fetch from "node-fetch";
-
 export async function handler(event) {
   try {
-    const body = JSON.parse(event.body);
-    const userInput = body.input || "";
+    const body = JSON.parse(event.body || "{}");
+    const input = (body.input || "").toLowerCase().trim();
 
-    // ❌ Illegal input filter
-    if (userInput.toLowerCase().includes("illegal")) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ answer: "⚠️ Illegal input not allowed!" })
-      };
-    }
+    let answer = "Hello"; // Default response
 
-    // ✅ Wikipedia REST API (no API key needed)
-    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(userInput)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    let result;
-    if (data.extract) {
-      result = data.extract;
-    } else {
-      result = "❌ No Wikipedia result found for: " + userInput;
+    // Simple logic
+    if (input === "hi") {
+      answer = "Hello";
+    } else if (input === "how are you") {
+      answer = "I am fine, thank you!";
+    } else if (input) {
+      answer = "You said: " + input;
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ answer: result })
+      body: JSON.stringify({ answer })
     };
 
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ answer: "Server Error: " + err.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ answer: "Server Error: " + err.message })
+    };
   }
 }

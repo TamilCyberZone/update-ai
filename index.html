@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wiki AI Search</title>
+  <title>AI Hello</title>
 </head>
 <body>
-  <h1>🌐 Wiki Search AI</h1>
-  <textarea id="userInput" placeholder="எந்த விஷயம் வேண்டும்? (type any topic)" rows="4" cols="50"></textarea>
+  <h1>AI Backend Example</h1>
+  <textarea id="userInput" placeholder="Type something..." rows="4" cols="50"></textarea>
   <br><br>
-  <button onclick="askAI()">Search</button>
-  
-  <!-- Answer will show in H1 -->
+  <button onclick="askAI()">Send</button>
+
+  <!-- Response shown here -->
   <h1 id="response" style="color: #1a73e8; font-size: 1.5em;">Hello</h1>
 
   <script>
@@ -18,7 +18,7 @@
       const text = document.getElementById("userInput").value.trim();
       const responseH1 = document.getElementById("response");
 
-      // If no input, show "Hello" and return
+      // If no input, show "Hello"
       if (!text) {
         responseH1.textContent = "Hello";
         return;
@@ -34,7 +34,7 @@
         const data = await res.json();
         responseH1.textContent = data.answer;
       } catch (err) {
-        responseH1.textContent = "Error fetching data!";
+        responseH1.textContent = "Error from backend!";
         console.error(err);
       }
     }
