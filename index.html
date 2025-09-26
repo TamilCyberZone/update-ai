@@ -8,7 +8,9 @@
   <h1>🌐 Wiki Search AI</h1>
   <textarea id="userInput" placeholder="எந்த விஷயம் வேண்டும்? (type any topic)"></textarea>
   <button onclick="askAI()">Search</button>
-  <pre id="response"></pre>
+  
+  <!-- Answer shown in <p> -->
+  <p id="response"></p>
 
   <script>
     async function askAI() {
@@ -19,6 +21,8 @@
         body: JSON.stringify({ input: text })
       });
       const data = await res.json();
+      
+      // Print inside <p> tag
       document.getElementById("response").textContent = data.answer;
     }
   </script>
