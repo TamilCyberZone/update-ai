@@ -11,23 +11,32 @@
   <button onclick="askAI()">Search</button>
   
   <!-- Answer will show in H1 -->
-  <h1 id="response" style="color: #1a73e8; font-size: 1.5em;"></h1>
+  <h1 id="response" style="color: #1a73e8; font-size: 1.5em;">Hello</h1>
 
   <script>
     async function askAI() {
-      const text = document.getElementById("userInput").value;
-      if (!text) return alert("Please enter a topic!");
+      const text = document.getElementById("userInput").value.trim();
+      const responseH1 = document.getElementById("response");
 
-      const res = await fetch("/.netlify/functions/script", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: text })
-      });
+      // If no input, show "Hello" and return
+      if (!text) {
+        responseH1.textContent = "Hello";
+        return;
+      }
 
-      const data = await res.json();
+      try {
+        const res = await fetch("/.netlify/functions/script", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input: text })
+        });
 
-      // Print answer inside <h1>
-      document.getElementById("response").textContent = data.answer;
+        const data = await res.json();
+        responseH1.textContent = data.answer;
+      } catch (err) {
+        responseH1.textContent = "Error fetching data!";
+        console.error(err);
+      }
     }
   </script>
 </body>
