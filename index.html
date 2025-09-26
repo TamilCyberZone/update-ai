@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TCZone AI</title>
+</head>
+<body>
+  <h1>⚡ Tamil Cyber Zone AI ⚡</h1>
+  <textarea id="userInput" placeholder="Type your question or paste a URL..."></textarea>
+  <button onclick="askAI()">Ask AI</button>
+  <pre id="response"></pre>
+  <audio id="voice" controls hidden></audio>
+
+  <script>
+    async function askAI() {
+      const text = document.getElementById("userInput").value;
+      const res = await fetch("/.netlify/functions/script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: text })
+      });
+      const data = await res.json();
+      document.getElementById("response").textContent = data.answer;
+
+      // 🎤 Voice output
+      if (data.audio) {
+        const audio = document.getElementById("voice");
+        audio.src = "data:audio/mp3;base64," + data.audio;
+        audio.hidden = false;
+        audio.play();
+      }
+    }
+  </script>
+</body>
+</html>
