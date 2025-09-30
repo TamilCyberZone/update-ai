@@ -1,4 +1,17 @@
-docoment.addEventListener("DOMContentLoaded", () => {
+ // Voice output function ஐ document.addEventListener இக்கு வெளியே வைக்கவும்.
+// இதனால் handleInput ஐப் புதுப்பிக்க எளிதாக இருக்கும்.
+function speak(text){
+  if('speechSynthesis' in window){
+    const utter = new SpeechSynthesisUtterance(text.replace(/<br>/g,' '));
+    // Try to select Tamil voice if available, fallback to default
+    const voices = window.speechSynthesis.getVoices();
+    const tamilVoice = voices.find(v=>v.lang.startsWith('ta')) || voices[0];
+    if(tamilVoice) utter.voice = tamilVoice;
+    window.speechSynthesis.speak(utter);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   const chatMessages = document.getElementById("chat-messages");
   const userInput = document.getElementById("user-input");
   const sendButton = document.getElementById("send-button");
@@ -8,9 +21,10 @@ docoment.addEventListener("DOMContentLoaded", () => {
   const knowledgeBase = {
     "how to make a toy car": { text:"1.Prepare the Body: Clean and dry your box or carton. 2.Decorate: Cover the box with paper or paint it to look like a car. Draw on windows, headlights, and doors. 3. Attach Wheels: Simply glue your cardboard circles, bottle caps, or buttons to the side of the car body. Since the wheels are just decorations, they don't need to spin. 4. Finish: Let it dry completely and play!", link:"https://www.wikihow.com/Make-a-Toy-Car" },
     "How to make a toy car in tamil": { text:"ஒரு சிறிய டாய் கார் பிளாஸ்டிக் பாட்டில் அல்லது கார்ட்போர்டு உடையால் செய்யலாம்.", link:"https://www.wikihow.com/Make-a-Toy-Car" },
-    "javascript": { text:"JavaScript என்பது வலைப்பக்கங்களை இயங்கக்கூடியதாக 만드는 programming மொழி.", link:"https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
+    "javascript": { text:"JavaScript என்பது வலைப்பக்கங்களை இயங்கக்கூடியதாக ஆக்கும் programming மொழி.", link:"https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
     "hallo": { text:"hallo how can i help you?", link:"https://th.bing.com/th/id/OIP.F7P6Pt30bcn_bsl4AFsbTQHaFY?w=264&h=192&c=7&r=0&o=7&pid=1.7&rm=3" },
-    "how are you":{text:"i am fine", link:"https://th.bing.com/th/id/OIP.KGq0ZyyA6MRmS5rwkDvjfAHaH_?w=154&h=180&c=7&r=0&o=7&pid=1.7&rm=3"}
+    "how are you":{text:"i am fine", link:"https://th.bing.com/th/id/OIP.KGq0ZyyA6MRmS5rwkDvjfAHaH_?w=154&h=180&c=7&r=0&o=7&pid=1.7&rm=3"},
+    "hi":{text:"hi how can i help you?"}
   };
 
   const codeTemplates = {
@@ -74,62 +88,7 @@ docoment.addEventListener("DOMContentLoaded", () => {
     return combined;
   }
 
-  async function handleInput(){
-    const input = userInput.value.trim();
-    if(!input) return;
-    addMessage(input,true);
-    userInput.value='';
-
-    let localResp = getLocalResponse(input);
-    if(localResp){
-      addMessage(localResp);
-      answerEl.innerHTML = localResp;
-      sourcesEl.innerHTML = "<b>Source:</b> Local Knowledge";
-      return;
-    }
-
-    const codeLang = detectCode(input);
-    if(codeLang && codeTemplates[codeLang]){
-      const code = codeTemplates[codeLang];
-      addMessage('Code ('+codeLang+'):<br><pre class="code">'+code+'</pre>');
-      answerEl.innerHTML = '<pre class="code">'+code+'</pre>';
-      sourcesEl.innerHTML = "<b>Source:</b> Local Template";
-      return;
-    }
-
-    addMessage("Searching web sources...");
-    answerEl.textContent = "Working...";
-    const webSnippets = await gatherWebSources(input);
-    if(webSnippets.length===0){
-      addMessage("No web data found.");
-      answerEl.textContent = "No web data found or CORS blocked.";
-      sourcesEl.innerHTML='';
-      return;
-    }
-
-    const finalAnswer = synthesize(webSnippets);
-    addMessage(finalAnswer);
-    answerEl.innerHTML = finalAnswer;
-    sourcesEl.innerHTML = "<b>Sources:</b> "+webSnippets.map(s=>s.source).join(', ');
-  }
-
-  sendButton.addEventListener('click', handleInput);
-  userInput.addEventListener('keypress', e=>{ if(e.key==='Enter') handleInput(); });
-});
-
-
-  // Voice output function
-  function speak(text){
-    if('speechSynthesis' in window){
-      const utter = new SpeechSynthesisUtterance(text.replace(/<br>/g,' '));
-      // Try to select Tamil voice if available, fallback to default
-      const voices = window.speechSynthesis.getVoices();
-      const tamilVoice = voices.find(v=>v.lang.startsWith('ta')) || voices[0];
-      if(tamilVoice) utter.voice = tamilVoice;
-      window.speechSynthesis.speak(utter);
-    }
-  }
-
+  // இதுதான் திருத்தப்பட்ட handleInput ஃபங்ஷன்
   async function handleInput(){
     const input = userInput.value.trim();
     if(!input) return;
@@ -173,3 +132,7 @@ docoment.addEventListener("DOMContentLoaded", () => {
     // Voice output
     speak(finalAnswer);
   }
+
+  sendButton.addEventListener('click', handleInput);
+  userInput.addEventListener('keypress', e=>{ if(e.key==='Enter') handleInput(); });
+});
