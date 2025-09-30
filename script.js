@@ -117,8 +117,7 @@ docoment.addEventListener("DOMContentLoaded", () => {
   userInput.addEventListener('keypress', e=>{ if(e.key==='Enter') handleInput(); });
 });
 
-</script>
-<script>
+
   // Voice output function
   function speak(text){
     if('speechSynthesis' in window){
